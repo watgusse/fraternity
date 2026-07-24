@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
+const product = require('../config/product.json');
 const orderService = require('../services/orderService');
 const storage = require('../services/storage');
 const { issueAdmin, logout } = require('../middleware/auth');
@@ -40,6 +41,12 @@ function assertAdminAuthConfigured() {
 }
 function buildSummary(orders) {
   const paidOrders = orders.filter((order) => order.paymentStatus === 'paid');
+  const sizeCounts = Object.fromEntries(product.sizes.map((size) => [size.name, 0]));
+  for (const order of orders) {
+    for (const item of order.items) {
+      if (Object.hasOwn(sizeCounts, item.size)) sizeCounts[item.size] += item.quantity;
+    }
+  }
   return {
     all: orders.length,
     pending: orders.filter((order) => order.orderStatus === 'pending_payment_verification').length,
@@ -52,6 +59,7 @@ function buildSummary(orders) {
     ),
     amount: orders.reduce((sum, order) => sum + order.totalAmount, 0),
     paidAmount: paidOrders.reduce((sum, order) => sum + order.totalAmount, 0),
+    sizeCounts,
   };
 }
 exports.loginPage = (req, res) =>

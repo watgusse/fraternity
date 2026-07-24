@@ -8,19 +8,22 @@ test('paid summary includes paid orders after they progress to shipping or compl
       orderStatus: 'pending_payment_verification',
       paymentStatus: 'pending_verification',
       totalAmount: 550,
-      items: [{ quantity: 1 }],
+      items: [{ size: 'S', quantity: 1 }],
     },
     {
       orderStatus: 'paid',
       paymentStatus: 'paid',
       totalAmount: 1100,
-      items: [{ quantity: 2 }],
+      items: [{ size: 'L', quantity: 2 }],
     },
     {
       orderStatus: 'completed',
       paymentStatus: 'paid',
       totalAmount: 1650,
-      items: [{ quantity: 3 }],
+      items: [
+        { size: 'L', quantity: 1 },
+        { size: '2XL', quantity: 2 },
+      ],
     },
   ];
 
@@ -30,4 +33,5 @@ test('paid summary includes paid orders after they progress to shipping or compl
   assert.equal(summary.paidAmount, 2750);
   assert.equal(summary.amount, 3300);
   assert.equal(summary.shirts, 6);
+  assert.deepEqual(summary.sizeCounts, { S: 1, M: 0, L: 3, XL: 0, '2XL': 2, '3XL': 0 });
 });

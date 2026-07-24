@@ -12,6 +12,8 @@
       <h1 class="h3 mb-1">ภาพรวมคำสั่งซื้อ</h1>
       <p class="text-muted mb-0">ค้นหา ตรวจสอบ และเตรียมการจัดส่ง</p>
     </div>
+    <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+      data-bs-target="#sizeSummaryModal"><i class="bi bi-bar-chart-fill me-1"></i> ดูสรุปแต่ละไซซ์</button>
   </div>
   <div class="summary-grid mb-4">
     <div class="summary-card"><small>ทั้งหมด</small><strong><%= summary.all %></strong></div>
@@ -30,6 +32,44 @@
     </div>
     <div class="summary-card success">
       <small>ยอดชำระแล้ว</small><strong><%= formatCurrency(summary.paidAmount) %></strong>
+    </div>
+  </div>
+  <div class="modal fade" id="sizeSummaryModal" tabindex="-1"
+    aria-labelledby="sizeSummaryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="sizeSummaryModalLabel">สรุปจำนวนเสื้อแต่ละไซซ์</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+        </div>
+        <div class="modal-body p-0">
+          <table class="table table-striped align-middle mb-0">
+            <thead>
+              <tr>
+                <th class="ps-4">ไซซ์</th>
+                <th class="text-end pe-4">จำนวนรวม</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% Object.entries(summary.sizeCounts).forEach(([size, quantity]) => { %>
+              <tr>
+                <th class="ps-4"><%= size %></th>
+                <td class="text-end pe-4"><strong><%= quantity %></strong> ตัว</td>
+              </tr>
+              <% }) %>
+            </tbody>
+            <tfoot>
+              <tr class="table-dark">
+                <th class="ps-4">รวมทุกไซซ์</th>
+                <th class="text-end pe-4"><%= summary.shirts %> ตัว</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">ปิด</button>
+        </div>
+      </div>
     </div>
   </div>
   <form class="filter-card mb-4" method="get">
