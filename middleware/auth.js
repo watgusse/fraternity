@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 const COOKIE = 'frt_admin';
 function requireAdmin(req, res, next) {
   try {
-    req.admin = jwt.verify(req.cookies[COOKIE], process.env.ADMIN_JWT_SECRET);
+    req.admin = jwt.verify(req.cookies[COOKIE], process.env.ADMIN_JWT_SECRET, {
+      issuer: 'fraternity-order',
+    });
     return next();
   } catch {
     return res.redirect('/admin/login');

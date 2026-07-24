@@ -13,11 +13,30 @@ const labels = {
   cancelled: 'ยกเลิก',
 };
 function admins() {
+  const raw = process.env.ADMIN_USERS_JSON;
+  if (!raw) throw new Error('ADMIN_USERS_JSON is missing');
+  let parsed;
   try {
-    return JSON.parse(process.env.ADMIN_USERS_JSON || '[]');
-  } catch {
-    return [];
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`ADMIN_USERS_JSON is not valid JSON: ${error.message}`);
   }
+  if (!Array.isArray(parsed) || parsed.length === 0)
+    throw new Error('ADMIN_USERS_JSON must contain at least one admin');
+  for (const user of parsed) {
+    if (!user || typeof user.username !== 'string' || !user.username.trim())
+      throw new Error('ADMIN_USERS_JSON contains an invalid username');
+    if (
+      typeof user.passwordHash !== 'string' ||
+      !/^\$2[aby]\$\d{2}\$.{53}$/.test(user.passwordHash)
+    )
+      throw new Error(`ADMIN_USERS_JSON contains an invalid passwordHash for ${user.username}`);
+  }
+  return parsed;
+}
+function assertAdminAuthConfigured() {
+  if (!process.env.ADMIN_JWT_SECRET || process.env.ADMIN_JWT_SECRET.length < 32)
+    throw new Error('ADMIN_JWT_SECRET is missing or shorter than 32 characters');
 }
 exports.loginPage = (req, res) =>
   res.render('admin/login', { title: 'เข้าสู่ระบบผู้ดูแล', error: null });
@@ -28,14 +47,28 @@ exports.login = async (req, res, next) => {
         title: 'เข้าสู่ระบบผู้ดูแล',
         error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
       });
-    const user = admins().find((u) => u.username === req.body.username);
+    let configuredAdmins;
+    try {
+      assertAdminAuthConfigured();
+      configuredAdmins = admins();
+    } catch (error) {
+      console.error(`[Admin auth configuration] ${error.message}`);
+      return res.status(503).render('admin/login', {
+        title: 'Admin login',
+        error: 'ระบบผู้ดูแลยังตั้งค่าไม่สมบูรณ์ กรุณาตรวจสอบ Environment Variables',
+      });
+    }
+    const user = configuredAdmins.find((u) => u.username === req.body.username);
     const ok = user && (await bcrypt.compare(req.body.password, user.passwordHash));
-    if (!ok)
+    if (!ok) {
+      console.warn('[Admin auth] Login rejected: invalid credentials');
       return res.status(401).render('admin/login', {
         title: 'เข้าสู่ระบบผู้ดูแล',
         error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
       });
+    }
     issueAdmin(res, user);
+    console.info(`[Admin auth] Login succeeded for ${user.username}`);
     res.redirect('/admin');
   } catch (e) {
     next(e);
@@ -171,3 +204,4 @@ exports.printBatch = async (req, res, next) => {
 };
 exports.labels = labels;
 exports._admins = admins;
+exports._assertAdminAuthConfigured = assertAdminAuthConfigured;

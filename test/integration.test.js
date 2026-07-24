@@ -21,6 +21,7 @@ test('ปฏิเสธสถานะที่ไม่มีในระบ�
   const agent = request.agent(app),
     token = jwt.sign({ username: 'tester', role: 'admin' }, process.env.ADMIN_JWT_SECRET, {
       expiresIn: '1h',
+      issuer: 'fraternity-order',
     });
   const csrf = await csrfFor(agent, '/admin/login');
   const r = await agent
