@@ -1,0 +1,66 @@
+{
+  "revision": 4,
+  "updatedAt": "2026-07-24T05:53:42.299Z",
+  "orders": [
+    {
+      "id": "203315d3-f78e-426f-9bf4-e4e56a45d752",
+      "orderNumber": "FRT-20260724-E5F201",
+      "customer": {
+        "fullName": "ธวัชชัย สารวงษ์",
+        "phone": "0621593556",
+        "email": "wattguse@gmail.com",
+        "addressLine": "55/335 หมู่ 1 หมู่บ้านภัสสร 8",
+        "subdistrict": "บางใหญ่",
+        "district": "บางใหญ่",
+        "province": "นนทบุรี",
+        "postalCode": "11140"
+      },
+      "items": [
+        {
+          "productName": "Fraternity Heritage T-Shirt",
+          "size": "S",
+          "quantity": 10,
+          "unitPrice": 550,
+          "subtotal": 5500
+        }
+      ],
+      "totalAmount": 5500,
+      "note": "",
+      "paymentSlip": {
+        "storageType": "local",
+        "pathname": "203315d3-f78e-426f-9bf4-e4e56a45d752-1784872321827-1433836f-bd97-4317-a9d8-b909ff2691e5.png",
+        "url": "",
+        "contentType": "image/png",
+        "originalName": "hd.png"
+      },
+      "paymentStatus": "paid",
+      "shippingStatus": "completed",
+      "orderStatus": "completed",
+      "statusHistory": [
+        {
+          "status": "pending_payment_verification",
+          "changedAt": "2026-07-24T05:52:01.825Z",
+          "changedBy": "system"
+        },
+        {
+          "status": "paid",
+          "changedAt": "2026-07-24T05:53:40.254Z",
+          "changedBy": "admin1"
+        },
+        {
+          "status": "shipping",
+          "changedAt": "2026-07-24T05:53:41.355Z",
+          "changedBy": "admin1"
+        },
+        {
+          "status": "completed",
+          "changedAt": "2026-07-24T05:53:42.298Z",
+          "changedBy": "admin1"
+        }
+      ],
+      "adminNote": "",
+      "createdAt": "2026-07-24T05:52:01.825Z",
+      "updatedAt": "2026-07-24T05:53:42.298Z"
+    }
+  ]
+}

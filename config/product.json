@@ -1,0 +1,22 @@
+{
+  "groupName": "FRATERNITY THAILAND",
+  "name": "เสื้อครบรอบ 9 ปี Fraternity Thailand",
+  "price": 550,
+  "description": "ครบรอบ 9 ปี ฟราเธอนี่ตี้ พี่ ๆ เพื่อน ๆ ท่านใดอยากได้เสื้อสวย ๆ ไว้ใส่ร่วมฉลอง 9 ปี มาร่วมสั่งกันได้เลยครับ",
+  "orderType": "พรีออร์เดอร์ รอผลิตหลังปิดรับคำสั่งซื้อ",
+  "fabric": "เสื้อสีดำลายพิเศษ 9th Anniversary Collection พิมพ์ลายด้านหน้า ด้านหลัง และแขนเสื้อ",
+  "sizes": [
+    { "name": "S", "width": 18, "chest": 36, "length": 27 },
+    { "name": "M", "width": 20, "chest": 40, "length": 28 },
+    { "name": "L", "width": 22, "chest": 44, "length": 29 },
+    { "name": "XL", "width": 24, "chest": 48, "length": 30 },
+    { "name": "2XL", "width": 26, "chest": 52, "length": 31 },
+    { "name": "3XL", "width": 28, "chest": 56, "length": 32 }
+  ],
+  "maxQuantity": 20,
+  "bank": {
+    "bankName": "ธนาคารกสิกรไทย",
+    "accountName": "ธวัชชัย สารวงษ์",
+    "accountNumber": "229-8-81027-4"
+  }
+}

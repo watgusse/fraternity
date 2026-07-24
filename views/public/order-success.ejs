@@ -1,0 +1,31 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %>
+<main class="py-5">
+  <div class="container narrow">
+    <div class="success-card text-center">
+      <div class="success-icon"><i class="bi bi-check-lg"></i></div>
+      <h1>ขอบคุณสำหรับคำสั่งซื้อ</h1>
+      <p class="text-muted">ผู้ดูแลจะตรวจสอบหลักฐานการชำระเงิน</p>
+      <div class="order-number">
+        <small>เลขที่คำสั่งซื้อ</small><strong><%= order.orderNumber %></strong>
+      </div>
+      <dl class="row text-start mt-4">
+        <dt class="col-5">ชื่อผู้สั่ง</dt>
+        <dd class="col-7"><%= order.customer.fullName %></dd>
+        <dt class="col-5">รายการเสื้อ</dt>
+        <dd class="col-7">
+          <% order.items.forEach(item => { %>
+          <div><strong><%= item.size %></strong> × <%= item.quantity %> ตัว</div>
+          <% }) %>
+        </dd>
+        <dt class="col-5">ยอดรวม</dt>
+        <dd class="col-7"><%= formatCurrency(order.totalAmount) %></dd>
+        <dt class="col-5">สถานะ</dt>
+        <dd class="col-7"><span class="badge text-bg-warning">รอตรวจสอบการชำระเงิน</span></dd>
+        <dt class="col-5">วันที่สั่ง</dt>
+        <dd class="col-7"><%= formatDate(order.createdAt) %></dd>
+      </dl>
+      <a class="btn btn-dark mt-3" href="/">กลับหน้าแรก</a>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>

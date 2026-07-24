@@ -1,0 +1,94 @@
+@page {
+  size: A6 portrait;
+  margin: 5mm;
+}
+.print-page {
+  background: #eee;
+  min-height: 100vh;
+  padding: 1rem;
+}
+.print-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.shipping-label {
+  width: 100mm;
+  min-height: 145mm;
+  margin: 0 auto 10mm;
+  background: #fff;
+  border: 2px dashed #111;
+  padding: 7mm;
+  display: flex;
+  flex-direction: column;
+  overflow-wrap: anywhere;
+  page-break-after: always;
+}
+.shipping-label:last-child {
+  page-break-after: auto;
+}
+.label-head {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #111;
+  padding-bottom: 2mm;
+}
+.shipping-label h1 {
+  font-size: 20pt;
+  margin: 4mm 0 2mm;
+}
+.phone {
+  font-size: 14pt;
+  font-weight: 700;
+}
+.address {
+  font-size: 13pt;
+  line-height: 1.45;
+  margin: 3mm 0;
+}
+.postal {
+  font-size: 30pt;
+  letter-spacing: 6px;
+  font-weight: 900;
+  text-align: center;
+  border: 2px solid #111;
+  margin: 3mm 0;
+}
+.packing,
+.tracking {
+  font-size: 11pt;
+  border-top: 1px solid #555;
+  padding: 2mm 0;
+}
+.packing span {
+  font-weight: 800;
+  margin-left: 3mm;
+}
+.tracking {
+  margin-top: auto;
+}
+.sender {
+  font-size: 8pt;
+  color: #444;
+  border-top: 1px solid #aaa;
+  padding-top: 2mm;
+}
+@media print {
+  body {
+    background: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-page {
+    padding: 0;
+    background: #fff;
+  }
+  .shipping-label {
+    margin: 0;
+    width: 100%;
+    height: 140mm;
+    border: 1.5px dashed #111;
+  }
+}

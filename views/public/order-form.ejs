@@ -1,0 +1,133 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %><main class="py-5">
+  <div class="container form-container">
+    <div class="mb-4"><span class="eyebrow">ORDER FORM</span>
+      <h1 class="mt-2">สั่งซื้อเสื้อ</h1>
+      <p>ราคา <strong><%= formatCurrency(product.price) %></strong> ต่อชิ้น รวมจัดส่งแล้ว</p>
+    </div><%- include('../partials/flash',{errors}) %><form id="orderForm" action="/order"
+      method="post" enctype="multipart/form-data" novalidate><input type="hidden" name="_csrf"
+        value="<%= csrfToken %>">
+      <div class="form-card">
+        <h2 class="h5 mb-4">ข้อมูลผู้สั่งซื้อ</h2>
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label">ชื่อและนามสกุล *</label><input
+              class="form-control" name="fullName" maxlength="120" required
+              value="<%= old.fullName||'' %>"></div>
+          <div class="col-md-6"><label class="form-label">เบอร์โทรศัพท์ *</label><input
+              class="form-control" name="phone" inputmode="tel" pattern="0[0-9]{8,9}" required
+              value="<%= old.phone||'' %>"></div>
+          <div class="col-md-6"><label class="form-label">Email (ไม่บังคับ)</label><input
+              class="form-control" type="email" name="email" value="<%= old.email||'' %>"></div>
+          <div class="col-12"><label class="form-label">บ้านเลขที่ ถนน หมู่บ้าน *</label><textarea
+              class="form-control" name="addressLine" maxlength="300"
+              required><%= old.addressLine||'' %></textarea></div>
+          <div class="col-md-4"><label class="form-label">ตำบล/แขวง *</label><input
+              class="form-control" name="subdistrict" required value="<%= old.subdistrict||'' %>">
+          </div>
+          <div class="col-md-4"><label class="form-label">อำเภอ/เขต *</label><input
+              class="form-control" name="district" required value="<%= old.district||'' %>"></div>
+          <div class="col-md-4"><label class="form-label">จังหวัด *</label><input
+              class="form-control" name="province" required value="<%= old.province||'' %>"></div>
+          <div class="col-md-4"><label class="form-label">รหัสไปรษณีย์ *</label><input
+              class="form-control" name="postalCode" inputmode="numeric" pattern="[0-9]{5}"
+              maxlength="5" required value="<%= old.postalCode||'' %>"></div>
+        </div>
+      </div>
+      <div class="form-card mt-4">
+        <h2 class="h5 mb-4">รายการและการชำระเงิน</h2>
+        <% const oldSizes = Array.isArray(old.sizes) ? old.sizes : [old.sizes || '']; %>
+        <% const oldQuantities = Array.isArray(old.quantities) ? old.quantities : [old.quantities || 1]; %>
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div>
+                <strong>เลือกไซซ์และจำนวน *</strong>
+                <small class="d-block text-muted">สั่งรวมกันได้ไม่เกิน <%= product.maxQuantity %>
+                  ตัว</small>
+              </div>
+              <button id="addItemButton" class="btn btn-outline-dark btn-sm" type="button">
+                <i class="bi bi-plus-lg"></i> เพิ่มไซซ์
+              </button>
+            </div>
+            <div id="itemRows" data-price="<%= product.price %>"
+              data-max-total="<%= product.maxQuantity %>">
+              <% oldSizes.forEach((oldSize, index) => { %>
+              <div class="order-item-row row g-2 align-items-end mb-3">
+                <div class="col-7 col-md-6">
+                  <label class="form-label">ไซซ์</label>
+                  <select class="form-select item-size" name="sizes" required>
+                    <option value="">เลือกไซซ์</option>
+                    <% product.sizes.forEach(size => { %>
+                    <option value="<%= size.name %>" <%= oldSize === size.name ? 'selected' : '' %>>
+                      <%= size.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="col-3 col-md-4">
+                  <label class="form-label">จำนวน</label>
+                  <input class="form-control item-quantity" type="number" name="quantities" min="1"
+                    max="<%= product.maxQuantity %>" value="<%= oldQuantities[index] || 1 %>"
+                    required>
+                </div>
+                <div class="col-2">
+                  <button class="btn btn-outline-danger w-100 remove-item" type="button"
+                    aria-label="ลบรายการ">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+            <template id="itemRowTemplate">
+              <div class="order-item-row row g-2 align-items-end mb-3">
+                <div class="col-7 col-md-6">
+                  <label class="form-label">ไซซ์</label>
+                  <select class="form-select item-size" name="sizes" required>
+                    <option value="">เลือกไซซ์</option>
+                    <% product.sizes.forEach(size => { %>
+                    <option value="<%= size.name %>"><%= size.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="col-3 col-md-4">
+                  <label class="form-label">จำนวน</label>
+                  <input class="form-control item-quantity" type="number" name="quantities" min="1"
+                    max="<%= product.maxQuantity %>" value="1" required>
+                </div>
+                <div class="col-2">
+                  <button class="btn btn-outline-danger w-100 remove-item" type="button"
+                    aria-label="ลบรายการ">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div class="col-12">
+            <div id="quantityWarning" class="alert alert-warning d-none" role="alert"></div>
+            <div class="total-box">ยอดรวมโดยประมาณ
+              <strong id="total"><%= formatCurrency(product.price) %></strong>
+              <small>รวม <span id="totalQuantity">1</span> ตัว · ระบบจะคำนวณใหม่ที่ Server</small>
+            </div>
+          </div>
+          <div class="col-12"><label class="form-label">ภาพสลิป (JPG, PNG, WebP ไม่เกิน 5 MB)
+              *</label><input class="form-control" type="file" name="paymentSlip"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required></div>
+          <div class="col-12"><label class="form-label">ข้อความเพิ่มเติม</label><textarea
+              class="form-control" name="note" maxlength="500"><%= old.note||'' %></textarea></div>
+        </div>
+        <hr>
+        <div class="form-check mb-2"><input class="form-check-input" type="checkbox"
+            name="confirmCorrect" value="yes" id="correct" required><label class="form-check-label"
+            for="correct">ฉันยืนยันว่าข้อมูลถูกต้อง *</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" name="consent"
+            value="yes" id="consent" required><label class="form-check-label"
+            for="consent">ฉันยินยอมให้ใช้ข้อมูลเพื่อรับคำสั่งซื้อและจัดส่ง
+            และเข้าใจว่าจะเก็บข้อมูลเท่าที่จำเป็น *</label></div><button id="submitBtn"
+          class="btn btn-gold btn-lg w-100 mt-4" type="submit"><span
+            class="normal">ยืนยันคำสั่งซื้อ</span><span class="loading d-none"><span
+              class="spinner-border spinner-border-sm"></span> กำลังบันทึก...</span></button>
+      </div>
+    </form>
+  </div>
+</main>
+<script src="/js/order-form.js"></script><%- include('../partials/footer') %>

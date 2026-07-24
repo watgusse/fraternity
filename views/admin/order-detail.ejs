@@ -1,0 +1,119 @@
+<%- include('../partials/header',{title}) %><nav class="navbar navbar-dark bg-ink no-print">
+  <div class="container"><a class="navbar-brand" href="/admin">← Dashboard</a><a
+      class="btn btn-outline-light btn-sm" target="_blank"
+      href="/admin/orders/<%= order.id %>/print"><i class="bi bi-printer"></i> พิมพ์ที่อยู่</a>
+  </div>
+</nav>
+<main class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between gap-3 mb-4">
+    <div><span class="eyebrow">ORDER DETAIL</span>
+      <h1 class="h2"><%= order.orderNumber %></h1>
+      <p class="text-muted"><%= formatDate(order.createdAt) %></p>
+    </div>
+    <div><span class="badge text-bg-warning fs-6"><%= labels[order.orderStatus] %></span></div>
+  </div><% if(currentPath && false){} %><div class="row g-4">
+    <div class="col-lg-7">
+      <div class="form-card mb-4">
+        <h2 class="h5">ข้อมูลผู้ซื้อ</h2>
+        <dl class="row mb-0">
+          <dt class="col-sm-4">ชื่อ</dt>
+          <dd class="col-sm-8"><%= order.customer.fullName %></dd>
+          <dt class="col-sm-4">โทรศัพท์</dt>
+          <dd class="col-sm-8"><%= order.customer.phone %></dd>
+          <dt class="col-sm-4">Email</dt>
+          <dd class="col-sm-8"><%= order.customer.email||'-' %></dd>
+          <dt class="col-sm-4">ที่อยู่</dt>
+          <dd class="col-sm-8 text-break"><%= order.customer.addressLine %>
+            <%= order.customer.subdistrict %> <%= order.customer.district %>
+            <%= order.customer.province %> <strong><%= order.customer.postalCode %></strong></dd>
+        </dl>
+      </div>
+      <div class="form-card mb-4">
+        <h2 class="h5">รายการ</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>สินค้า</th>
+              <th>ไซซ์</th>
+              <th>จำนวน</th>
+              <th>ราคา/ตัว</th>
+              <th>รวม</th>
+            </tr>
+          </thead>
+          <tbody><% order.items.forEach(i=>{ %><tr>
+              <td><%= i.productName %></td>
+              <td><%= i.size %></td>
+              <td><%= i.quantity %></td>
+              <td><%= formatCurrency(i.unitPrice) %></td>
+              <td><%= formatCurrency(i.subtotal) %></td>
+            </tr><% }) %></tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4">ยอดรวม</th>
+              <th><%= formatCurrency(order.totalAmount) %></th>
+            </tr>
+          </tfoot>
+        </table>
+        <p><strong>ข้อความเพิ่มเติม:</strong> <%= order.note||'-' %></p>
+      </div>
+      <div class="form-card">
+        <h2 class="h5">หลักฐานการชำระเงิน</h2><img class="slip-img"
+          src="/admin/orders/<%= order.id %>/slip" alt="สลิปของคำสั่งซื้อ <%= order.orderNumber %>">
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="form-card mb-4">
+        <h2 class="h5">เปลี่ยนสถานะ</h2>
+        <form action="/admin/orders/<%= order.id %>/status" method="post" class="status-form"><input
+            type="hidden" name="_csrf" value="<%= csrfToken %>"><select class="form-select mb-3"
+            name="status" required><% statuses.forEach(s=>{ %><option value="<%= s %>"
+              <%= order.orderStatus===s?'selected':'' %>><%= labels[s] %></option>
+            <% }) %></select><button class="btn btn-gold w-100">บันทึกสถานะ</button></form>
+        <div class="d-flex gap-2 mt-3">
+          <form action="/admin/orders/<%= order.id %>/status" method="post"
+            class="status-form flex-fill"><input type="hidden" name="_csrf"
+              value="<%= csrfToken %>"><input type="hidden" name="status" value="paid"><button
+              class="btn btn-success btn-sm w-100">ชำระแล้ว</button></form>
+          <form action="/admin/orders/<%= order.id %>/status" method="post"
+            class="status-form flex-fill"><input type="hidden" name="_csrf"
+              value="<%= csrfToken %>"><input type="hidden" name="status" value="shipping"><button
+              class="btn btn-info btn-sm w-100">กำลังส่ง</button></form>
+          <form action="/admin/orders/<%= order.id %>/status" method="post"
+            class="status-form flex-fill"><input type="hidden" name="_csrf"
+              value="<%= csrfToken %>"><input type="hidden" name="status" value="completed"><button
+              class="btn btn-primary btn-sm w-100">สำเร็จ</button></form>
+        </div>
+      </div>
+      <div class="form-card mb-4">
+        <h2 class="h5">หมายเหตุภายใน</h2>
+        <form action="/admin/orders/<%= order.id %>/note" method="post"><input type="hidden"
+            name="_csrf" value="<%= csrfToken %>"><textarea class="form-control mb-3"
+            name="adminNote" maxlength="1000" rows="4"><%= order.adminNote %></textarea><button
+            class="btn btn-dark">บันทึกหมายเหตุ</button></form>
+      </div>
+      <div class="form-card">
+        <h2 class="h5">ประวัติสถานะ</h2>
+        <div class="timeline"><% [...order.statusHistory].reverse().forEach(h=>{ %><div
+            class="timeline-item">
+            <strong><%= labels[h.status]||h.status %></strong><small><%= formatDate(h.changedAt) %>
+              · <%= h.changedBy %></small>
+          </div><% }) %></div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="modal fade" id="statusModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title fs-5">ยืนยันการเปลี่ยนสถานะ</h2><button class="btn-close"
+          data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">ต้องการบันทึกสถานะนี้ใช่หรือไม่?</div>
+      <div class="modal-footer"><button class="btn btn-secondary"
+          data-bs-dismiss="modal">ยกเลิก</button><button class="btn btn-gold"
+          id="confirmStatus">ยืนยัน</button></div>
+    </div>
+  </div>
+</div>
+<script src="/js/admin.js"></script><%- include('../partials/footer') %>

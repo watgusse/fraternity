@@ -1,0 +1,9 @@
+<%- include('../partials/header',{title,printPage:true}) %><main class="print-page">
+  <div class="print-actions no-print"><button class="btn btn-dark"
+      onclick="window.print()">พิมพ์ทั้งหมด</button><button class="btn btn-outline-dark"
+      onclick="window.close()">ปิด</button></div>
+  <% orders.forEach(order=>{ %><%- include('print-label-body',{order,sender}) %><% }) %>
+</main>
+</body>
+
+</html>

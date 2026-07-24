@@ -1,0 +1,42 @@
+{
+  "name": "fraternity-shirt-order",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ระบบรับสั่งซื้อเสื้อ Fraternity",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "hash-password": "node scripts/hash-password.js",
+    "seed": "node scripts/seed-orders.js",
+    "test": "node --test",
+    "format": "prettier --write \"**/*.{js,json,css,md}\" && html-beautify --indent-size 2 --wrap-line-length 100 --end-with-newline --replace \"views/**/*.ejs\"",
+    "format:check": "prettier --check \"**/*.{js,json,css,md}\""
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.0.0",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "method-override": "^3.0.0",
+    "multer": "^2.0.2",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "js-beautify": "^2.0.3",
+    "nodemon": "^3.1.11",
+    "prettier": "^3.9.6",
+    "prettier-plugin-ejs": "^1.0.3",
+    "supertest": "^7.2.2"
+  }
+}

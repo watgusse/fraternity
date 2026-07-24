@@ -1,0 +1,17 @@
+<%- include('../partials/header',{title}) %>
+<main class="login-page">
+  <div class="login-card">
+    <a href="/" class="text-decoration-none text-muted small">← กลับหน้าแรก</a>
+    <h1 class="h3 mt-4">ผู้ดูแลระบบ</h1>
+    <p class="text-muted">เข้าสู่ระบบเพื่อจัดการคำสั่งซื้อ</p>
+    <%- include('../partials/flash',{error}) %>
+    <form method="post" action="/admin/login">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" /><label
+        class="form-label">ชื่อผู้ใช้</label><input class="form-control mb-3" name="username"
+        autocomplete="username" required /><label class="form-label">รหัสผ่าน</label><input
+        class="form-control mb-4" type="password" name="password" autocomplete="current-password"
+        required /><button class="btn btn-gold w-100">เข้าสู่ระบบ</button>
+    </form>
+  </div>
+</main>
+<%- include('../partials/footer') %>

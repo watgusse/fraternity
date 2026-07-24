@@ -1,0 +1,11 @@
+node_modules/
+.pnpm-store/
+.env
+.env.*
+!.env.example
+uploads/slips/*
+!uploads/slips/.gitkeep
+.vercel/
+npm-debug.log*
+.DS_Store
+coverage/

@@ -1,0 +1,5 @@
+node_modules/
+.pnpm-store/
+uploads/slips/
+public/images/
+pnpm-lock.yaml

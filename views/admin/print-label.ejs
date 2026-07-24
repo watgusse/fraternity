@@ -1,0 +1,8 @@
+<%- include('../partials/header',{title,printPage:true}) %><main class="print-page">
+  <div class="print-actions no-print"><button class="btn btn-dark" onclick="window.print()"><i
+        class="bi bi-printer"></i> พิมพ์</button><button class="btn btn-outline-dark"
+      onclick="history.back()">กลับ</button></div><%- include('print-label-body',{order,sender}) %>
+</main>
+</body>
+
+</html>

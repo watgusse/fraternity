@@ -1,0 +1,98 @@
+<%- include('../partials/header',{title}) %><nav class="navbar navbar-dark bg-ink no-print">
+  <div class="container-fluid px-lg-4"><a class="navbar-brand fw-bold" href="/admin">FRATERNITY
+      ADMIN</a>
+    <form action="/admin/logout" method="post"><input type="hidden" name="_csrf"
+        value="<%= csrfToken %>"><button class="btn btn-outline-light btn-sm"><i
+          class="bi bi-box-arrow-right"></i> ออกจากระบบ</button></form>
+  </div>
+</nav>
+<main class="container-fluid px-lg-4 py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1">ภาพรวมคำสั่งซื้อ</h1>
+      <p class="text-muted mb-0">ค้นหา ตรวจสอบ และเตรียมการจัดส่ง</p>
+    </div>
+  </div>
+  <div class="summary-grid mb-4">
+    <div class="summary-card"><small>ทั้งหมด</small><strong><%= summary.all %></strong></div>
+    <div class="summary-card warning">
+      <small>รอตรวจสอบ</small><strong><%= summary.pending %></strong>
+    </div>
+    <div class="summary-card success"><small>ชำระแล้ว</small><strong><%= summary.paid %></strong>
+    </div>
+    <div class="summary-card info"><small>กำลังส่ง</small><strong><%= summary.shipping %></strong>
+    </div>
+    <div class="summary-card"><small>ส่งสำเร็จ</small><strong><%= summary.completed %></strong>
+    </div>
+    <div class="summary-card"><small>จำนวนเสื้อ</small><strong><%= summary.shirts %></strong></div>
+    <div class="summary-card gold">
+      <small>ยอดรวม</small><strong><%= formatCurrency(summary.amount) %></strong>
+    </div>
+  </div>
+  <form class="filter-card mb-4" method="get">
+    <div class="row g-2">
+      <div class="col-lg-4"><input class="form-control" name="search" value="<%= filters.q %>"
+          placeholder="เลขคำสั่งซื้อ ชื่อ หรือเบอร์โทร"></div>
+      <div class="col-md-3 col-lg-2"><select class="form-select" name="status">
+          <option value="">ทุกสถานะ</option><% Object.entries(labels).forEach(([v,l])=>{ %><option
+            value="<%= v %>" <%= filters.status===v?'selected':'' %>><%= l %></option><% }) %>
+        </select></div>
+      <div class="col-md-3 col-lg-2"><select class="form-select" name="size">
+          <option value="">ทุกไซซ์</option><% ['S','M','L','XL','2XL','3XL'].forEach(v=>{ %><option
+            <%= filters.size===v?'selected':'' %>><%= v %></option><% }) %>
+        </select></div>
+      <div class="col-md-3 col-lg-2"><input class="form-control" type="date" name="date"
+          value="<%= filters.date %>"></div>
+      <div class="col-md-3 col-lg-2 d-grid"><button class="btn btn-dark">ค้นหา</button></div>
+    </div>
+  </form>
+  <form action="/admin/orders/print-batch" method="post" target="_blank"><input type="hidden"
+      name="_csrf" value="<%= csrfToken %>">
+    <div class="table-card">
+      <div class="p-3 border-bottom d-flex justify-content-between"><strong>รายการ
+          <%= orders.length %> รายการ</strong><button class="btn btn-outline-dark btn-sm"><i
+            class="bi bi-printer"></i> พิมพ์ที่เลือก</button></div>
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th><input class="form-check-input" type="checkbox" id="selectAll"></th>
+              <th>เลขที่ / วันที่</th>
+              <th>ลูกค้า</th>
+              <th>สินค้า</th>
+              <th>ยอดรวม</th>
+              <th>สถานะ</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody><% if(!orders.length){ %><tr>
+              <td colspan="7" class="text-center py-5 text-muted">ไม่พบรายการ</td>
+            </tr>
+            <% } %><% orders.forEach(o=>{ const badge={paid:'success',shipping:'info',completed:'primary',payment_rejected:'danger',cancelled:'secondary'}[o.orderStatus]||'warning'; %>
+            <tr>
+              <td><input class="form-check-input order-check" type="checkbox" name="orderIds"
+                  value="<%= o.id %>"></td>
+              <td><strong><%= o.orderNumber %></strong><small
+                  class="d-block text-muted"><%= formatDate(o.createdAt) %></small></td>
+              <td><%= o.customer.fullName %><small class="d-block"><%= o.customer.phone %></small>
+              </td>
+              <td>
+                <% o.items.forEach(item => { %>
+                <span class="badge text-bg-light border me-1"><%= item.size %> ×
+                  <%= item.quantity %></span>
+                <% }) %>
+              </td>
+              <td><%= formatCurrency(o.totalAmount) %></td>
+              <td><span class="badge text-bg-<%= badge %>"><%= labels[o.orderStatus] %></span></td>
+              <td class="text-nowrap"><a class="btn btn-sm btn-dark"
+                  href="/admin/orders/<%= o.id %>">ดู</a> <a
+                  class="btn btn-sm btn-outline-secondary" target="_blank"
+                  href="/admin/orders/<%= o.id %>/print"><i class="bi bi-printer"></i></a></td>
+            </tr><% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+</main>
+<script src="/js/admin.js"></script><%- include('../partials/footer') %>

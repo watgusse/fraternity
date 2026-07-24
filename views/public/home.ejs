@@ -1,0 +1,148 @@
+<%- include('../partials/header',{title}) %>
+<%- include('../partials/navbar') %>
+
+<main>
+  <section class="hero anniversary-hero">
+    <div class="container py-5 py-lg-6">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5">
+          <span class="eyebrow">9TH ANNIVERSARY COLLECTION</span>
+          <h1 class="display-4 fw-bold mt-3"><%= product.name %></h1>
+          <p class="lead text-secondary"><%= product.description %></p>
+
+          <div class="preorder-note my-4">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <strong>สินค้าแบบพรีออร์เดอร์</strong>
+              <span><%= product.orderType %></span>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+            <span class="display-5 fw-bold text-gold"><%= formatCurrency(product.price) %></span>
+            <span class="badge rounded-pill text-bg-success fs-6">
+              <i class="bi bi-truck me-1"></i> รวมค่าจัดส่งแล้ว
+            </span>
+          </div>
+
+          <a href="/order" class="btn btn-gold btn-lg px-5">
+            <i class="bi bi-bag-plus me-2"></i>สั่งซื้อเสื้อ
+          </a>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="hero-photo-wrap">
+            <img src="/images/products/p2.jpg"
+              alt="เสื้อ Fraternity Thailand ครบรอบ 9 ปี เมื่อสวมใส่ด้านหน้าและด้านหลัง"
+              class="img-fluid hero-campaign-image">
+            <span class="hero-photo-label">FRONT / BACK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="product" class="py-5 bg-ink text-white">
+    <div class="container">
+      <div class="text-center mb-4">
+        <span class="eyebrow text-gold">THE COLLECTION</span>
+        <h2 class="display-6 fw-bold mt-2">ลายพิเศษสำหรับการฉลอง 9 ปี</h2>
+        <p class="text-white-50 mb-0">ดูรายละเอียดลายเสื้อและขนาดจริงก่อนเลือกสั่งซื้อ</p>
+      </div>
+
+      <div class="anniversary-gallery">
+        <figure class="gallery-card gallery-artwork">
+          <img src="/images/products/p1.jpg"
+            alt="รายละเอียดอาร์ตเวิร์กลายด้านหลัง Fraternity Thailand">
+          <figcaption>รายละเอียดอาร์ตเวิร์ก</figcaption>
+        </figure>
+        <figure class="gallery-card gallery-sizing">
+          <img src="/images/products/p3.jpg" alt="เสื้อด้านหน้า ด้านหลัง ราคา และตารางขนาด">
+          <figcaption>แบบเสื้อและตารางขนาด</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="info-card h-100">
+            <i class="bi bi-stars fs-1 text-gold"></i>
+            <h2 class="h4 mt-3">รายละเอียดสินค้า</h2>
+            <p><%= product.fabric %></p>
+            <p class="mb-0 text-muted">ราคา <%= formatCurrency(product.price) %> ต่อหนึ่งตัว
+              รวมค่าจัดส่งแล้ว</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info-card h-100">
+            <i class="bi bi-bag-check fs-1 text-gold"></i>
+            <h2 class="h4 mt-3">วิธีการสั่งซื้อ</h2>
+            <ol class="mb-0">
+              <li>เลือกไซซ์และจำนวนที่ต้องการ</li>
+              <li>โอนเงินตามยอดรวมเข้าบัญชีด้านล่าง</li>
+              <li>กรอกที่อยู่และแนบภาพสลิป</li>
+              <li>รอผู้ดูแลตรวจสอบและดำเนินการผลิต</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sizes" class="py-5 bg-light">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-5">
+          <span class="eyebrow">SIZE GUIDE</span>
+          <h2 class="section-title mt-2">ตารางขนาดเสื้อ</h2>
+          <p class="text-muted">หน่วยเป็นนิ้ว แนะนำให้วัดจากเสื้อตัวที่ใส่สบายแล้วเทียบกับตาราง</p>
+        </div>
+        <div class="col-lg-7">
+          <div class="table-responsive size-table-wrap">
+            <table class="table table-bordered bg-white text-center align-middle mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>ไซซ์</th>
+                  <th>กว้าง</th>
+                  <th>ยาว</th>
+                  <th>รอบอก</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% product.sizes.forEach(size => { %>
+                <tr>
+                  <th><%= size.name %></th>
+                  <td><%= size.width %></td>
+                  <td><%= size.length %></td>
+                  <td><%= size.chest %></td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5 payment-section">
+    <div class="container">
+      <div class="payment-box bank-card text-center">
+        <div class="bank-icon"><i class="bi bi-bank"></i></div>
+        <span class="eyebrow">PAYMENT</span>
+        <h2 class="h3 mt-2">บัญชีสำหรับชำระเงิน</h2>
+        <p class="mb-1"><strong><%= product.bank.bankName %></strong></p>
+        <p class="account-number"><%= product.bank.accountNumber %></p>
+        <p class="mb-3">ชื่อบัญชี <strong><%= product.bank.accountName %></strong></p>
+        <div class="alert alert-light border mb-0">
+          กรุณาตรวจสอบชื่อบัญชีก่อนโอน และเก็บสลิปไว้แนบในแบบฟอร์มสั่งซื้อ
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

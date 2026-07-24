@@ -1,0 +1,29 @@
+<article class="shipping-label">
+  <div class="label-head">
+    <span>ผู้รับ</span><strong><%= order.orderNumber %></strong>
+  </div>
+  <h1><%= order.customer.fullName %></h1>
+  <div class="phone">
+    <i class="bi bi-telephone"></i>
+    <%= order.customer.phone %>
+  </div>
+  <p class="address">
+    <%= order.customer.addressLine %> <%= order.customer.subdistrict %> <%= order.customer.district
+    %> <%= order.customer.province %>
+  </p>
+  <div class="postal"><%= order.customer.postalCode %></div>
+  <div class="packing">
+    <strong>ตรวจสินค้า:</strong> <% order.items.forEach(i=>{ %><span><%= i.size %>
+      ×
+      <%= i.quantity %></span><% }) %>
+  </div>
+  <div class="tracking">Tracking: __________________________</div>
+  <div class="sender">
+    <strong>ผู้ส่ง:</strong>
+    <%= sender.name %>
+    ·
+    <%= sender.phone %><br /><%= sender.address %>
+    <%=
+    sender.postalCode %>
+  </div>
+</article>

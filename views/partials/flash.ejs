@@ -1,0 +1,12 @@
+<% if(typeof error!=='undefined'&&error){ %>
+<div class="alert alert-danger" role="alert"><%= error %></div>
+<% } %><% if(typeof errors!=='undefined'&&errors.length){ %>
+<div class="alert alert-danger">
+  <strong>กรุณาตรวจสอบข้อมูล</strong>
+  <ul class="mb-0">
+    <% errors.forEach(e=>{ %>
+    <li><%= e.msg %></li>
+    <% }) %>
+  </ul>
+</div>
+<% } %>
