@@ -5,7 +5,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const { app } = require('../app');
+const app = require('../app');
 const { COOKIE } = require('../middleware/auth');
 async function csrfFor(agent, url) {
   const r = await agent.get(url);

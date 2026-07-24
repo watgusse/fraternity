@@ -39,13 +39,21 @@ function update(mutator) {
 }
 async function saveSlip({ buffer, orderId, extension, contentType, originalName }) {
   const pathname = `slips/${orderId}-${Date.now()}.${extension}`;
-  await put(pathname, buffer, {
+  const blob = await put(pathname, buffer, {
     access: 'private',
     contentType,
     addRandomSuffix: true,
     token: process.env.BLOB_READ_WRITE_TOKEN,
   });
-  return { storageType: 'vercel-blob', pathname, url: '', contentType, originalName };
+  // With addRandomSuffix enabled, Blob returns a different final pathname.
+  // Persist that value so the admin view and cleanup target the actual object.
+  return {
+    storageType: 'vercel-blob',
+    pathname: blob.pathname,
+    url: '',
+    contentType,
+    originalName,
+  };
 }
 async function getSlip(pathname) {
   const info = await head(pathname, { token: process.env.BLOB_READ_WRITE_TOKEN });
