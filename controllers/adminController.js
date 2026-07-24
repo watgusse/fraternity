@@ -38,6 +38,22 @@ function assertAdminAuthConfigured() {
   if (!process.env.ADMIN_JWT_SECRET || process.env.ADMIN_JWT_SECRET.length < 32)
     throw new Error('ADMIN_JWT_SECRET is missing or shorter than 32 characters');
 }
+function buildSummary(orders) {
+  const paidOrders = orders.filter((order) => order.paymentStatus === 'paid');
+  return {
+    all: orders.length,
+    pending: orders.filter((order) => order.orderStatus === 'pending_payment_verification').length,
+    paid: paidOrders.length,
+    shipping: orders.filter((order) => order.orderStatus === 'shipping').length,
+    completed: orders.filter((order) => order.orderStatus === 'completed').length,
+    shirts: orders.reduce(
+      (sum, order) => sum + order.items.reduce((itemSum, item) => itemSum + item.quantity, 0),
+      0,
+    ),
+    amount: orders.reduce((sum, order) => sum + order.totalAmount, 0),
+    paidAmount: paidOrders.reduce((sum, order) => sum + order.totalAmount, 0),
+  };
+}
 exports.loginPage = (req, res) =>
   res.render('admin/login', { title: 'เข้าสู่ระบบผู้ดูแล', error: null });
 exports.login = async (req, res, next) => {
@@ -96,15 +112,7 @@ exports.dashboard = async (req, res, next) => {
         (!size || o.items.some((item) => item.size === size)) &&
         (!date || o.createdAt.startsWith(date)),
     );
-    const summary = {
-      all: all.length,
-      pending: all.filter((o) => o.orderStatus === 'pending_payment_verification').length,
-      paid: all.filter((o) => o.orderStatus === 'paid').length,
-      shipping: all.filter((o) => o.orderStatus === 'shipping').length,
-      completed: all.filter((o) => o.orderStatus === 'completed').length,
-      shirts: all.reduce((s, o) => s + o.items.reduce((a, i) => a + i.quantity, 0), 0),
-      amount: all.reduce((s, o) => s + o.totalAmount, 0),
-    };
+    const summary = buildSummary(all);
     res.render('admin/dashboard', {
       title: 'Dashboard',
       orders,
@@ -205,3 +213,4 @@ exports.printBatch = async (req, res, next) => {
 exports.labels = labels;
 exports._admins = admins;
 exports._assertAdminAuthConfigured = assertAdminAuthConfigured;
+exports._buildSummary = buildSummary;

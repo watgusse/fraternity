@@ -28,6 +28,9 @@
     <div class="summary-card gold">
       <small>ยอดรวม</small><strong><%= formatCurrency(summary.amount) %></strong>
     </div>
+    <div class="summary-card success">
+      <small>ยอดชำระแล้ว</small><strong><%= formatCurrency(summary.paidAmount) %></strong>
+    </div>
   </div>
   <form class="filter-card mb-4" method="get">
     <div class="row g-2">
