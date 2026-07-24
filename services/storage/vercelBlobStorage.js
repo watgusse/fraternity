@@ -1,29 +1,23 @@
-const { put, head, del } = require('@vercel/blob');
+const { put, get, del } = require('@vercel/blob');
+
 const DATA_PATH = 'data/orders.json';
 let queue = Promise.resolve();
+
 async function readData() {
-  try {
-    const info = await head(DATA_PATH, { token: process.env.BLOB_READ_WRITE_TOKEN });
-    const response = await fetch(info.downloadUrl, {
-      headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
-      cache: 'no-store',
-    });
-    if (!response.ok) throw new Error(`Blob HTTP ${response.status}`);
-    return await response.json();
-  } catch (e) {
-    if (/404|not found/i.test(e.message)) return { revision: 0, updatedAt: null, orders: [] };
-    throw e;
-  }
+  const result = await get(DATA_PATH, { access: 'private', useCache: false });
+  if (!result) return { revision: 0, updatedAt: null, orders: [] };
+  return new Response(result.stream).json();
 }
+
 async function writeData(data) {
   await put(DATA_PATH, JSON.stringify(data, null, 2), {
     access: 'private',
     contentType: 'application/json',
     addRandomSuffix: false,
     allowOverwrite: true,
-    token: process.env.BLOB_READ_WRITE_TOKEN,
   });
 }
+
 function update(mutator) {
   const job = queue.then(async () => {
     const latest = await readData();
@@ -37,16 +31,14 @@ function update(mutator) {
   queue = job.catch(() => {});
   return job;
 }
+
 async function saveSlip({ buffer, orderId, extension, contentType, originalName }) {
   const pathname = `slips/${orderId}-${Date.now()}.${extension}`;
   const blob = await put(pathname, buffer, {
     access: 'private',
     contentType,
     addRandomSuffix: true,
-    token: process.env.BLOB_READ_WRITE_TOKEN,
   });
-  // With addRandomSuffix enabled, Blob returns a different final pathname.
-  // Persist that value so the admin view and cleanup target the actual object.
   return {
     storageType: 'vercel-blob',
     pathname: blob.pathname,
@@ -55,16 +47,15 @@ async function saveSlip({ buffer, orderId, extension, contentType, originalName 
     originalName,
   };
 }
+
 async function getSlip(pathname) {
-  const info = await head(pathname, { token: process.env.BLOB_READ_WRITE_TOKEN });
-  const response = await fetch(info.downloadUrl, {
-    headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
-    cache: 'no-store',
-  });
-  if (!response.ok) throw new Error('ไม่สามารถอ่านสลิปได้');
-  return { buffer: Buffer.from(await response.arrayBuffer()) };
+  const result = await get(pathname, { access: 'private' });
+  if (!result) throw new Error('Payment slip not found');
+  return { buffer: Buffer.from(await new Response(result.stream).arrayBuffer()) };
 }
+
 async function deleteSlip(pathname) {
-  await del(pathname, { token: process.env.BLOB_READ_WRITE_TOKEN });
+  await del(pathname);
 }
+
 module.exports = { readData, update, saveSlip, getSlip, deleteSlip };
