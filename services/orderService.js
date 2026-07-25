@@ -131,6 +131,40 @@ async function updateNote(id, note) {
   });
   return found;
 }
+async function updateOrder(id, input, username) {
+  const items = buildItems(input.items);
+  let found;
+  await storageFactory().update((data) => {
+    found = data.orders.find((order) => order.id === id);
+    if (!found) return;
+    found.customer = input.customer;
+    found.items = items;
+    found.totalAmount = calculateItemsTotal(items);
+    found.note = input.note || '';
+    found.updatedAt = new Date().toISOString();
+    found.statusHistory.push({
+      status: found.orderStatus,
+      changedAt: found.updatedAt,
+      changedBy: `${username} (edited order)`,
+    });
+  });
+  return found;
+}
+async function deleteOrder(id) {
+  let removed;
+  await storageFactory().update((data) => {
+    const index = data.orders.findIndex((order) => order.id === id);
+    if (index !== -1) [removed] = data.orders.splice(index, 1);
+  });
+  if (removed?.paymentSlip?.pathname) {
+    await storageFactory()
+      .deleteSlip(removed.paymentSlip.pathname)
+      .catch((error) => {
+        console.error(`[Order cleanup] Could not delete slip for ${id}: ${error.message}`);
+      });
+  }
+  return removed;
+}
 module.exports = {
   STATUSES,
   calculateTotal,
@@ -143,4 +177,6 @@ module.exports = {
   create,
   updateStatus,
   updateNote,
+  updateOrder,
+  deleteOrder,
 };

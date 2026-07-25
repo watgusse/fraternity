@@ -10,7 +10,9 @@
       <h1 class="h2"><%= order.orderNumber %></h1>
       <p class="text-muted"><%= formatDate(order.createdAt) %></p>
     </div>
-    <div><span class="badge text-bg-warning fs-6"><%= labels[order.orderStatus] %></span></div>
+    <div class="d-flex align-items-center gap-2"><a class="btn btn-outline-dark btn-sm"
+        href="/admin/orders/<%= order.id %>/edit"><i class="bi bi-pencil-square"></i> แก้ไข</a><span
+        class="badge text-bg-warning fs-6"><%= labels[order.orderStatus] %></span></div>
   </div><% if(currentPath && false){} %><div class="row g-4">
     <div class="col-lg-7">
       <div class="form-card mb-4">
@@ -59,6 +61,14 @@
       <div class="form-card">
         <h2 class="h5">หลักฐานการชำระเงิน</h2><img class="slip-img"
           src="/admin/orders/<%= order.id %>/slip" alt="สลิปของคำสั่งซื้อ <%= order.orderNumber %>">
+      </div>
+      <div class="form-card border-danger mt-4">
+        <h2 class="h5 text-danger">ลบคำสั่งซื้อ</h2>
+        <p class="small text-muted">การลบจะลบข้อมูลรายการและไฟล์สลิปออกจากระบบ ไม่สามารถย้อนกลับได้</p>
+        <form action="/admin/orders/<%= order.id %>/delete" method="post" class="delete-order-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash"></i> ลบรายการนี้</button>
+        </form>
       </div>
     </div>
     <div class="col-lg-5">

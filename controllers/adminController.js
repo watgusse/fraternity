@@ -132,6 +132,84 @@ exports.dashboard = async (req, res, next) => {
     next(e);
   }
 };
+function editInput(body) {
+  const text = (name, max) =>
+    String(body[name] || '')
+      .trim()
+      .slice(0, max);
+  const customer = {
+    fullName: text('fullName', 120),
+    phone: text('phone', 20).replace(/[\s-]/g, ''),
+    email: text('email', 160),
+    addressLine: text('addressLine', 300),
+    subdistrict: text('subdistrict', 100),
+    district: text('district', 100),
+    province: text('province', 100),
+    postalCode: text('postalCode', 5),
+  };
+  if (
+    !customer.fullName ||
+    !/^0\d{8,9}$/.test(customer.phone) ||
+    !customer.addressLine ||
+    !customer.subdistrict ||
+    !customer.district ||
+    !customer.province ||
+    !/^\d{5}$/.test(customer.postalCode) ||
+    (customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email))
+  )
+    throw new Error('กรุณาตรวจสอบข้อมูลลูกค้าให้ถูกต้อง');
+  const items = product.sizes
+    .map(({ name }) => ({ size: name, quantity: Number(body[`quantity_${name}`] || 0) }))
+    .filter((item) => item.quantity > 0);
+  return { customer, items, note: text('note', 500) };
+}
+exports.editPage = async (req, res, next) => {
+  try {
+    const order = await orderService.findById(req.params.id);
+    if (!order) return res.sendStatus(404);
+    res.render('admin/order-edit', {
+      title: `แก้ไข ${order.orderNumber}`,
+      order,
+      product,
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+exports.edit = async (req, res, next) => {
+  try {
+    const order = await orderService.updateOrder(
+      req.params.id,
+      editInput(req.body),
+      req.admin.username,
+    );
+    if (!order) return res.sendStatus(404);
+    res.redirect(`/admin/orders/${order.id}?updated=order`);
+  } catch (error) {
+    if (error.message.includes('ไม่ถูกต้อง') || error.message.includes('เกิน')) {
+      const order = await orderService.findById(req.params.id);
+      if (!order) return res.sendStatus(404);
+      return res.status(422).render('admin/order-edit', {
+        title: `แก้ไข ${order.orderNumber}`,
+        order,
+        product,
+        error: error.message,
+      });
+    }
+    next(error);
+  }
+};
+exports.remove = async (req, res, next) => {
+  try {
+    const order = await orderService.deleteOrder(req.params.id);
+    if (!order) return res.sendStatus(404);
+    console.info(`[Admin order] ${req.admin.username} deleted ${order.orderNumber}`);
+    res.redirect('/admin?deleted=1');
+  } catch (error) {
+    next(error);
+  }
+};
 exports.detail = async (req, res, next) => {
   try {
     const order = await orderService.findById(req.params.id);

@@ -1,0 +1,33 @@
+<%- include('../partials/header',{title}) %>
+<nav class="navbar navbar-dark bg-ink">
+  <div class="container"><a class="navbar-brand" href="/admin/orders/<%= order.id %>">← กลับรายละเอียด</a></div>
+</nav>
+<main class="container py-4">
+  <div class="form-card mx-auto" style="max-width:900px">
+    <h1 class="h3 mb-1">แก้ไขคำสั่งซื้อ</h1>
+    <p class="text-muted"><%= order.orderNumber %></p>
+    <%- include('../partials/flash',{error}) %>
+    <form action="/admin/orders/<%= order.id %>/edit" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <h2 class="h5 mt-4">ข้อมูลลูกค้า</h2>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">ชื่อ-นามสกุล</label><input class="form-control" name="fullName" maxlength="120" required value="<%= order.customer.fullName %>"></div>
+        <div class="col-md-6"><label class="form-label">โทรศัพท์</label><input class="form-control" name="phone" required value="<%= order.customer.phone %>"></div>
+        <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="<%= order.customer.email %>"></div>
+        <div class="col-12"><label class="form-label">ที่อยู่</label><textarea class="form-control" name="addressLine" maxlength="300" required><%= order.customer.addressLine %></textarea></div>
+        <% ['subdistrict','district','province','postalCode'].forEach(name => { const labels={subdistrict:'ตำบล/แขวง',district:'อำเภอ/เขต',province:'จังหวัด',postalCode:'รหัสไปรษณีย์'}; %>
+        <div class="col-md-3"><label class="form-label"><%= labels[name] %></label><input class="form-control" name="<%= name %>" required value="<%= order.customer[name] %>"></div>
+        <% }) %>
+      </div>
+      <h2 class="h5 mt-4">จำนวนแต่ละไซซ์</h2>
+      <div class="row g-3">
+        <% product.sizes.forEach(({name}) => { const current=order.items.find(item=>item.size===name); %>
+        <div class="col-6 col-md-2"><label class="form-label">ไซซ์ <%= name %></label><input class="form-control" type="number" min="0" max="<%= product.maxQuantity %>" name="quantity_<%= name %>" value="<%= current?.quantity || 0 %>"></div>
+        <% }) %>
+      </div>
+      <div class="mt-3"><label class="form-label">ข้อความเพิ่มเติม</label><textarea class="form-control" name="note" maxlength="500" rows="3"><%= order.note %></textarea></div>
+      <div class="d-flex gap-2 mt-4"><button class="btn btn-gold">บันทึกการแก้ไข</button><a class="btn btn-outline-secondary" href="/admin/orders/<%= order.id %>">ยกเลิก</a></div>
+    </form>
+  </div>
+</main>
+<%- include('../partials/footer') %>

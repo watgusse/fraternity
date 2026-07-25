@@ -4,6 +4,11 @@
     selectAll.addEventListener('change', () =>
       document.querySelectorAll('.order-check').forEach((c) => (c.checked = selectAll.checked)),
     );
+  document.querySelectorAll('.delete-order-form').forEach((form) =>
+    form.addEventListener('submit', (event) => {
+      if (!window.confirm('ยืนยันลบคำสั่งซื้อนี้และไฟล์สลิปอย่างถาวร?')) event.preventDefault();
+    }),
+  );
   const forms = document.querySelectorAll('.status-form'),
     modalEl = document.querySelector('#statusModal'),
     confirm = document.querySelector('#confirmStatus');
