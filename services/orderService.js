@@ -1,4 +1,4 @@
-const { randomUUID } = require('crypto');
+const { randomUUID, randomBytes } = require('crypto');
 const product = require('../config/product.json');
 const storageFactory = require('./storage');
 const generateOrderNumber = require('../utils/generateOrderNumber');
@@ -49,6 +49,9 @@ function calculateItemsTotal(items) {
 function validSize(size) {
   return product.sizes.some((s) => s.name === size);
 }
+function generateShareToken() {
+  return randomBytes(32).toString('base64url');
+}
 async function list() {
   return (await storageFactory().readData()).orders;
 }
@@ -57,6 +60,10 @@ async function findById(id) {
 }
 async function findByOrderNumber(n) {
   return (await list()).find((o) => o.orderNumber === n);
+}
+async function findByShareToken(token) {
+  if (!/^[A-Za-z0-9_-]{43}$/.test(String(token || ''))) return undefined;
+  return (await list()).find((order) => order.shareToken === token);
 }
 async function create(input, file) {
   const id = randomUUID();
@@ -83,6 +90,7 @@ async function create(input, file) {
       paymentStatus: 'pending_verification',
       shippingStatus: 'waiting',
       orderStatus: 'pending_payment_verification',
+      shareToken: generateShareToken(),
       statusHistory: [
         { status: 'pending_payment_verification', changedAt: now, changedBy: 'system' },
       ],
@@ -165,6 +173,17 @@ async function deleteOrder(id) {
   }
   return removed;
 }
+async function rotateShareToken(id) {
+  let found;
+  await storageFactory().update((data) => {
+    found = data.orders.find((order) => order.id === id);
+    if (found) {
+      found.shareToken = generateShareToken();
+      found.updatedAt = new Date().toISOString();
+    }
+  });
+  return found;
+}
 module.exports = {
   STATUSES,
   calculateTotal,
@@ -174,9 +193,12 @@ module.exports = {
   list,
   findById,
   findByOrderNumber,
+  findByShareToken,
   create,
   updateStatus,
   updateNote,
   updateOrder,
   deleteOrder,
+  rotateShareToken,
+  generateShareToken,
 };

@@ -73,6 +73,16 @@
     </div>
     <div class="col-lg-5">
       <div class="form-card mb-4">
+        <h2 class="h5">ลิงก์ตรวจสอบสำหรับลูกค้า</h2>
+        <p class="small text-muted">ผู้ที่มีลิงก์สามารถดูสินค้า ยอดเงิน และสถานะได้โดยไม่ต้องเข้าสู่ระบบ</p>
+        <% if(shareUrl){ %>
+        <div class="input-group mb-2"><input id="customerShareUrl" class="form-control" readonly value="<%= shareUrl %>"><button type="button" class="btn btn-outline-dark" id="copyShareUrl"><i class="bi bi-copy"></i> คัดลอก</button></div>
+        <form action="/admin/orders/<%= order.id %>/share-link" method="post" class="rotate-share-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-link btn-sm text-danger px-0">เปลี่ยนลิงก์และยกเลิกลิงก์เดิม</button></form>
+        <% } else { %>
+        <form action="/admin/orders/<%= order.id %>/share-link" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-dark">สร้างลิงก์สำหรับลูกค้า</button></form>
+        <% } %>
+      </div>
+      <div class="form-card mb-4">
         <h2 class="h5">เปลี่ยนสถานะ</h2>
         <form action="/admin/orders/<%= order.id %>/status" method="post" class="status-form"><input
             type="hidden" name="_csrf" value="<%= csrfToken %>"><select class="form-select mb-3"

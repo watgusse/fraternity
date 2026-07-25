@@ -1,0 +1,32 @@
+<%- include('../partials/header',{title}) %><%- include('../partials/navbar') %>
+<main class="py-5">
+  <div class="container narrow">
+    <div class="success-card">
+      <div class="text-center mb-4">
+        <span class="eyebrow">ORDER STATUS</span>
+        <h1 class="h2">รายละเอียดคำสั่งซื้อ</h1>
+        <div class="order-number"><small>เลขที่คำสั่งซื้อ</small><strong><%= order.orderNumber %></strong></div>
+      </div>
+      <dl class="row mb-4">
+        <dt class="col-5">วันที่สั่งซื้อ</dt><dd class="col-7"><%= formatDate(order.createdAt) %></dd>
+        <dt class="col-5">สถานะล่าสุด</dt><dd class="col-7"><span class="badge text-bg-dark"><%= statusLabel %></span></dd>
+        <dt class="col-5">อัปเดตล่าสุด</dt><dd class="col-7"><%= formatDate(order.updatedAt) %></dd>
+      </dl>
+      <h2 class="h5">ข้อมูลผู้รับ</h2>
+      <dl class="row mb-4">
+        <dt class="col-5">ชื่อ-นามสกุล</dt><dd class="col-7"><%= order.customer.fullName %></dd>
+        <dt class="col-5">เบอร์โทรศัพท์</dt><dd class="col-7"><%= order.customer.phone %></dd>
+        <dt class="col-5">ที่อยู่จัดส่ง</dt>
+        <dd class="col-7 text-break"><%= order.customer.addressLine %> <%= order.customer.subdistrict %> <%= order.customer.district %> <%= order.customer.province %> <strong><%= order.customer.postalCode %></strong></dd>
+      </dl>
+      <h2 class="h5">รายการสินค้า</h2>
+      <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>ไซซ์</th><th class="text-center">จำนวน</th><th class="text-end">รวม</th></tr></thead>
+        <tbody><% order.items.forEach(item => { %><tr><td><strong><%= item.size %></strong></td><td class="text-center"><%= item.quantity %></td><td class="text-end"><%= formatCurrency(item.subtotal) %></td></tr><% }) %></tbody>
+        <tfoot><tr><th colspan="2">ยอดรวม</th><th class="text-end"><%= formatCurrency(order.totalAmount) %></th></tr></tfoot>
+      </table></div>
+      <div class="alert alert-warning border small mb-0"><strong>ข้อมูลส่วนบุคคล:</strong> หน้านี้แสดงชื่อ เบอร์โทร และที่อยู่จัดส่ง แต่ไม่แสดงอีเมลหรือหลักฐานการชำระเงิน กรุณาเก็บและส่งลิงก์นี้ให้เฉพาะผู้เกี่ยวข้อง</div>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>

@@ -18,4 +18,5 @@ router.post(
   controller.create,
 );
 router.get('/order/success/:orderNumber', controller.success);
+router.get('/order/status/:token', controller.publicStatus);
 module.exports = router;

@@ -57,3 +57,9 @@ test('ตรวจทั้งนามสกุลและ MIME', () => {
   assert.equal(validateFile({ originalname: 'a.exe', mimetype: 'image/webp' }), false);
   assert.equal(validateFile({ originalname: 'a.jpg', mimetype: 'text/plain' }), false);
 });
+test('สร้าง token สำหรับลิงก์ลูกค้าที่เดายากและไม่ซ้ำ', () => {
+  const first = orderService.generateShareToken();
+  const second = orderService.generateShareToken();
+  assert.match(first, /^[A-Za-z0-9_-]{43}$/);
+  assert.notEqual(first, second);
+});

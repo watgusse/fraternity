@@ -210,6 +210,15 @@ exports.remove = async (req, res, next) => {
     next(error);
   }
 };
+exports.shareLink = async (req, res, next) => {
+  try {
+    const order = await orderService.rotateShareToken(req.params.id);
+    if (!order) return res.sendStatus(404);
+    res.redirect(`/admin/orders/${order.id}?updated=share-link`);
+  } catch (error) {
+    next(error);
+  }
+};
 exports.detail = async (req, res, next) => {
   try {
     const order = await orderService.findById(req.params.id);
@@ -219,6 +228,12 @@ exports.detail = async (req, res, next) => {
       order,
       labels,
       statuses: orderService.STATUSES,
+      shareUrl: order.shareToken
+        ? new URL(
+            `/order/status/${order.shareToken}`,
+            process.env.APP_URL || `${req.protocol}://${req.get('host')}`,
+          ).href
+        : '',
     });
   } catch (e) {
     next(e);

@@ -62,3 +62,27 @@ exports.success = async (req, res, next) => {
     next(e);
   }
 };
+exports.publicStatus = async (req, res, next) => {
+  try {
+    const order = await orderService.findByShareToken(req.params.token);
+    if (!order)
+      return res.status(404).render('errors/404', { title: 'ไม่พบคำสั่งซื้อหรือลิงก์หมดอายุ' });
+    const labels = {
+      pending_payment_verification: 'รอตรวจสอบการชำระเงิน',
+      paid: 'ชำระเงินแล้ว',
+      preparing: 'กำลังเตรียมสินค้า',
+      shipping: 'อยู่ระหว่างการจัดส่ง',
+      completed: 'จัดส่งสำเร็จ',
+      payment_rejected: 'หลักฐานการชำระเงินไม่ถูกต้อง',
+      cancelled: 'ยกเลิก',
+    };
+    res.set('Cache-Control', 'private, no-store');
+    res.render('public/order-status', {
+      title: `ตรวจสอบ ${order.orderNumber}`,
+      order,
+      statusLabel: labels[order.orderStatus] || order.orderStatus,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

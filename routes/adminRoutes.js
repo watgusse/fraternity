@@ -20,6 +20,7 @@ router.get('/orders/:id', controller.detail);
 router.get('/orders/:id/edit', controller.editPage);
 router.post('/orders/:id/edit', controller.edit);
 router.post('/orders/:id/delete', controller.remove);
+router.post('/orders/:id/share-link', controller.shareLink);
 router.get('/orders/:id/slip', controller.slip);
 router.post('/orders/:id/status', controller.status);
 router.post('/orders/:id/note', controller.note);
