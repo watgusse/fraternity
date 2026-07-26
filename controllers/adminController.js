@@ -62,6 +62,21 @@ function buildSummary(orders) {
     sizeCounts,
   };
 }
+function filterOrders(orders, { q = '', status = '', size = '', date = '' }) {
+  return orders.filter(
+    (order) =>
+      (!q ||
+        [order.orderNumber, order.customer.fullName, order.customer.phone, order.adminNote].some(
+          (value) =>
+            String(value || '')
+              .toLowerCase()
+              .includes(q),
+        )) &&
+      (!status || order.orderStatus === status) &&
+      (!size || order.items.some((item) => item.size === size)) &&
+      (!date || order.createdAt.startsWith(date)),
+  );
+}
 exports.loginPage = (req, res) =>
   res.render('admin/login', { title: 'เข้าสู่ระบบผู้ดูแล', error: null });
 exports.login = async (req, res, next) => {
@@ -110,16 +125,7 @@ exports.dashboard = async (req, res, next) => {
       status = req.query.status || '',
       size = req.query.size || '',
       date = req.query.date || '';
-    orders = orders.filter(
-      (o) =>
-        (!q ||
-          [o.orderNumber, o.customer.fullName, o.customer.phone].some((v) =>
-            v.toLowerCase().includes(q),
-          )) &&
-        (!status || o.orderStatus === status) &&
-        (!size || o.items.some((item) => item.size === size)) &&
-        (!date || o.createdAt.startsWith(date)),
-    );
+    orders = filterOrders(orders, { q, status, size, date });
     const summary = buildSummary(all);
     res.render('admin/dashboard', {
       title: 'Dashboard',
@@ -315,3 +321,4 @@ exports.labels = labels;
 exports._admins = admins;
 exports._assertAdminAuthConfigured = assertAdminAuthConfigured;
 exports._buildSummary = buildSummary;
+exports._filterOrders = filterOrders;
