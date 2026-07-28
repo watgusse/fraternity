@@ -109,11 +109,17 @@
               <small>รวม <span id="totalQuantity">1</span> ตัว · ระบบจะคำนวณใหม่ที่ Server</small>
             </div>
           </div>
-          <div class="col-12 text-center">
-            <p class="mb-2"><strong>สแกน QR Code เพื่อชำระเงิน</strong></p>
+          <div class="col-12">
+            <div class="payment-box text-center">
+            <span class="eyebrow">PAYMENT</span>
+            <h3 class="h5 mt-2 mb-3">ข้อมูลสำหรับชำระเงิน</h3>
             <img class="qr mb-2" src="/images/qr-payment-v2.png"
               alt="QR Code สำหรับชำระเงินเข้าบัญชี <%= product.bank.accountName %>">
-            <p class="small text-muted mb-3">ชื่อบัญชี <strong><%= product.bank.accountName %></strong></p>
+            <p class="mb-1"><strong><%= product.bank.bankName %></strong></p>
+            <p class="account-number mb-1"><%= product.bank.accountNumber %></p>
+            <p class="mb-2">ชื่อบัญชี <strong><%= product.bank.accountName %></strong></p>
+            <p class="small text-muted mb-0">สแกน QR Code หรือโอนเข้าบัญชีด้านบน แล้วแนบภาพสลิปในช่องถัดไป</p>
+            </div>
           </div>
           <div class="col-12"><label class="form-label">ภาพสลิป (JPG, PNG, WebP ไม่เกิน 5 MB)
               *</label><input class="form-control" type="file" name="paymentSlip"
