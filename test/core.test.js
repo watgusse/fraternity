@@ -41,6 +41,19 @@ test('รวมรายการไซซ์ซ้ำและปฏิเส�
     ]),
   );
 });
+test('admin can build an edited order above the public 20-item limit', () => {
+  const rawItems = [
+    { size: 'L', quantity: 20 },
+    { size: 'XL', quantity: 19 },
+  ];
+  assert.throws(() => orderService.buildItems(rawItems));
+  const items = orderService.buildItems(rawItems, { enforceOrderLimit: false });
+  assert.equal(
+    items.reduce((sum, item) => sum + item.quantity, 0),
+    39,
+  );
+  assert.equal(orderService.calculateItemsTotal(items), 21450);
+});
 test('สร้างเลขคำสั่งซื้ออ่านง่ายและไม่ซ้ำ', () => {
   const a = generate(new Date('2026-07-24T04:00:00Z')),
     b = generate(new Date('2026-07-24T04:00:00Z'));

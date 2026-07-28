@@ -17,7 +17,7 @@ function calculateTotal(quantity) {
   return quantity * product.price;
 }
 
-function buildItems(rawItems) {
+function buildItems(rawItems, { enforceOrderLimit = true } = {}) {
   if (!Array.isArray(rawItems) || rawItems.length < 1 || rawItems.length > product.sizes.length) {
     throw new Error('รายการสินค้าไม่ถูกต้อง');
   }
@@ -27,12 +27,13 @@ function buildItems(rawItems) {
     const size = String(rawItem.size || '');
     const quantity = Number(rawItem.quantity);
     if (!validSize(size)) throw new Error('ไซซ์ไม่ถูกต้อง');
-    if (!Number.isInteger(quantity) || quantity < 1) throw new Error('จำนวนสินค้าไม่ถูกต้อง');
+    if (!Number.isSafeInteger(quantity) || quantity < 1) throw new Error('จำนวนสินค้าไม่ถูกต้อง');
     quantitiesBySize.set(size, (quantitiesBySize.get(size) || 0) + quantity);
   }
 
   const totalQuantity = [...quantitiesBySize.values()].reduce((sum, quantity) => sum + quantity, 0);
-  if (totalQuantity > product.maxQuantity) throw new Error('จำนวนสินค้ารวมเกินกำหนด');
+  if (enforceOrderLimit && totalQuantity > product.maxQuantity)
+    throw new Error('จำนวนสินค้ารวมเกินกำหนด');
 
   return [...quantitiesBySize.entries()].map(([size, quantity]) => ({
     productName: product.name,
@@ -140,7 +141,9 @@ async function updateNote(id, note) {
   return found;
 }
 async function updateOrder(id, input, username) {
-  const items = buildItems(input.items);
+  // Public orders keep the configured limit, while an authenticated admin can
+  // correct/import larger group orders from the edit page.
+  const items = buildItems(input.items, { enforceOrderLimit: false });
   let found;
   await storageFactory().update((data) => {
     found = data.orders.find((order) => order.id === id);
