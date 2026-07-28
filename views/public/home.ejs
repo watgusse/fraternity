@@ -137,6 +137,8 @@
         <p class="mb-1"><strong><%= product.bank.bankName %></strong></p>
         <p class="account-number"><%= product.bank.accountNumber %></p>
         <p class="mb-3">ชื่อบัญชี <strong><%= product.bank.accountName %></strong></p>
+        <img class="qr mb-3" src="/images/qr-payment-v2.png"
+          alt="QR Code สำหรับชำระเงินเข้าบัญชี <%= product.bank.accountName %>">
         <div class="alert alert-light border mb-0">
           กรุณาตรวจสอบชื่อบัญชีก่อนโอน และเก็บสลิปไว้แนบในแบบฟอร์มสั่งซื้อ
         </div>
