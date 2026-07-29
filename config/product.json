@@ -6,12 +6,12 @@
   "orderType": "พรีออร์เดอร์ รอผลิตหลังปิดรับคำสั่งซื้อ",
   "fabric": "เสื้อสีดำลายพิเศษ 9th Anniversary Collection พิมพ์ลายด้านหน้า ด้านหลัง และแขนเสื้อ",
   "sizes": [
-    { "name": "S", "width": 18, "chest": 36, "length": 27 },
-    { "name": "M", "width": 20, "chest": 40, "length": 28 },
-    { "name": "L", "width": 22, "chest": 44, "length": 29 },
-    { "name": "XL", "width": 24, "chest": 48, "length": 30 },
-    { "name": "2XL", "width": 26, "chest": 52, "length": 31 },
-    { "name": "3XL", "width": 28, "chest": 56, "length": 32 }
+    { "name": "S", "width": 18, "chest": 36, "length": 27, "production": 21 },
+    { "name": "M", "width": 20, "chest": 40, "length": 28, "production": 23 },
+    { "name": "L", "width": 22, "chest": 44, "length": 29, "production": 86 },
+    { "name": "XL", "width": 24, "chest": 48, "length": 30, "production": 53 },
+    { "name": "2XL", "width": 26, "chest": 52, "length": 31, "production": 14 },
+    { "name": "3XL", "width": 28, "chest": 56, "length": 32, "production": 3 }
   ],
   "maxQuantity": 20,
   "bank": {

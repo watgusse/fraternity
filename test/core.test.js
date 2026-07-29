@@ -76,3 +76,16 @@ test('สร้าง token สำหรับลิงก์ลูกค้า�
   assert.match(first, /^[A-Za-z0-9_-]{43}$/);
   assert.notEqual(first, second);
 });
+test('คำนวณจำนวนผลิต ยอดสั่ง และจำนวนคงเหลือแต่ละไซซ์โดยไม่ติดลบ', () => {
+  const availability = orderService.calculateAvailability([
+    {
+      items: [
+        { size: 'S', quantity: 20 },
+        { size: '3XL', quantity: 5 },
+      ],
+    },
+  ]);
+  assert.deepEqual(availability.S, { production: 21, ordered: 20, remaining: 1 });
+  assert.deepEqual(availability.M, { production: 23, ordered: 0, remaining: 23 });
+  assert.deepEqual(availability['3XL'], { production: 3, ordered: 5, remaining: 0 });
+});

@@ -53,6 +53,27 @@ function validSize(size) {
 function generateShareToken() {
   return randomBytes(32).toString('base64url');
 }
+function calculateAvailability(orders) {
+  const ordered = Object.fromEntries(product.sizes.map(({ name }) => [name, 0]));
+  for (const order of orders) {
+    for (const item of order.items || []) {
+      if (Object.hasOwn(ordered, item.size)) ordered[item.size] += item.quantity;
+    }
+  }
+  return Object.fromEntries(
+    product.sizes.map(({ name, production }) => [
+      name,
+      {
+        production,
+        ordered: ordered[name],
+        remaining: Math.max(0, production - ordered[name]),
+      },
+    ]),
+  );
+}
+async function getAvailability() {
+  return calculateAvailability(await list());
+}
 async function list() {
   return (await storageFactory().readData()).orders;
 }
@@ -100,6 +121,16 @@ async function create(input, file) {
       updatedAt: now,
     };
     await storageFactory().update((data) => {
+      const availability = calculateAvailability(data.orders);
+      for (const item of items) {
+        if (item.quantity > availability[item.size].remaining) {
+          const error = new Error(
+            `ไซซ์ ${item.size} เหลือสั่งได้ ${availability[item.size].remaining} ตัว`,
+          );
+          error.code = 'INSUFFICIENT_SIZE_STOCK';
+          throw error;
+        }
+      }
       data.orders.push(order);
     });
     return order;
@@ -204,4 +235,6 @@ module.exports = {
   deleteOrder,
   rotateShareToken,
   generateShareToken,
+  calculateAvailability,
+  getAvailability,
 };

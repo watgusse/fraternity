@@ -47,21 +47,27 @@
             <thead>
               <tr>
                 <th class="ps-4">ไซซ์</th>
-                <th class="text-end pe-4">จำนวนรวม</th>
+                <th class="text-end">จำนวนที่ผลิต</th>
+                <th class="text-end">ยอดที่สั่ง</th>
+                <th class="text-end pe-4">เหลือสั่งได้</th>
               </tr>
             </thead>
             <tbody>
-              <% Object.entries(summary.sizeCounts).forEach(([size, quantity]) => { %>
+              <% Object.entries(summary.sizeInventory).forEach(([size, inventory]) => { %>
               <tr>
                 <th class="ps-4"><%= size %></th>
-                <td class="text-end pe-4"><strong><%= quantity %></strong> ตัว</td>
+                <td class="text-end"><%= inventory.production %></td>
+                <td class="text-end"><%= inventory.ordered %></td>
+                <td class="text-end pe-4"><strong class="<%= inventory.remaining===0?'text-danger':'text-success' %>"><%= inventory.remaining %></strong></td>
               </tr>
               <% }) %>
             </tbody>
             <tfoot>
               <tr class="table-dark">
                 <th class="ps-4">รวมทุกไซซ์</th>
-                <th class="text-end pe-4"><%= summary.shirts %> ตัว</th>
+                <th class="text-end"><%= Object.values(summary.sizeInventory).reduce((sum,item)=>sum+item.production,0) %></th>
+                <th class="text-end"><%= summary.shirts %></th>
+                <th class="text-end pe-4"><%= Object.values(summary.sizeInventory).reduce((sum,item)=>sum+item.remaining,0) %></th>
               </tr>
             </tfoot>
           </table>

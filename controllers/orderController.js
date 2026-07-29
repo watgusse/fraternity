@@ -16,6 +16,7 @@ exports.create = async (req, res, next) => {
       return res.status(422).render('public/order-form', {
         title: 'สั่งซื้อเสื้อ',
         product,
+        availability: await orderService.getAvailability(),
         errors: errors.array(),
         old: req.body,
       });
@@ -49,6 +50,15 @@ exports.create = async (req, res, next) => {
     });
     res.redirect(`/order/success/${encodeURIComponent(order.orderNumber)}`);
   } catch (e) {
+    if (e.code === 'INSUFFICIENT_SIZE_STOCK') {
+      return res.status(409).render('public/order-form', {
+        title: 'สั่งซื้อเสื้อ',
+        product,
+        availability: await orderService.getAvailability(),
+        errors: [{ msg: e.message }],
+        old: req.body,
+      });
+    }
     next(e);
   }
 };

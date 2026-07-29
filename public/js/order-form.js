@@ -44,10 +44,15 @@
       const currentSelect = row.querySelector('.item-size');
       [...currentSelect.options].forEach((option) => {
         option.disabled =
-          option.value !== '' &&
-          option.value !== currentSelect.value &&
-          selectedSizes.includes(option.value);
+          option.dataset.soldOut === 'true' ||
+          (option.value !== '' &&
+            option.value !== currentSelect.value &&
+            selectedSizes.includes(option.value));
       });
+      const selectedOption = currentSelect.selectedOptions[0];
+      const quantityInput = row.querySelector('.item-quantity');
+      const remaining = Number(selectedOption?.dataset.remaining || maxTotal);
+      quantityInput.max = String(Math.min(maxTotal, remaining));
     });
   }
 

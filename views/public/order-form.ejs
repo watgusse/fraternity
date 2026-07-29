@@ -57,8 +57,11 @@
                   <select class="form-select item-size" name="sizes" required>
                     <option value="">เลือกไซซ์</option>
                     <% product.sizes.forEach(size => { %>
-                    <option value="<%= size.name %>" <%= oldSize === size.name ? 'selected' : '' %>>
-                      <%= size.name %></option>
+                    <option value="<%= size.name %>" data-remaining="<%= availability[size.name].remaining %>"
+                      data-sold-out="<%= availability[size.name].remaining===0 %>"
+                      <%= availability[size.name].remaining===0?'disabled':'' %>
+                      <%= oldSize === size.name ? 'selected' : '' %>><%= size.name %> —
+                      <%= availability[size.name].remaining===0?'หมด':`เหลือ ${availability[size.name].remaining} ตัว` %></option>
                     <% }) %>
                   </select>
                 </div>
@@ -84,7 +87,10 @@
                   <select class="form-select item-size" name="sizes" required>
                     <option value="">เลือกไซซ์</option>
                     <% product.sizes.forEach(size => { %>
-                    <option value="<%= size.name %>"><%= size.name %></option>
+                    <option value="<%= size.name %>" data-remaining="<%= availability[size.name].remaining %>"
+                      data-sold-out="<%= availability[size.name].remaining===0 %>"
+                      <%= availability[size.name].remaining===0?'disabled':'' %>><%= size.name %> —
+                      <%= availability[size.name].remaining===0?'หมด':`เหลือ ${availability[size.name].remaining} ตัว` %></option>
                     <% }) %>
                   </select>
                 </div>

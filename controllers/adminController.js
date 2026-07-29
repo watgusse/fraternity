@@ -47,6 +47,7 @@ function buildSummary(orders) {
       if (Object.hasOwn(sizeCounts, item.size)) sizeCounts[item.size] += item.quantity;
     }
   }
+  const sizeInventory = orderService.calculateAvailability(orders);
   return {
     all: orders.length,
     pending: orders.filter((order) => order.orderStatus === 'pending_payment_verification').length,
@@ -60,6 +61,7 @@ function buildSummary(orders) {
     amount: orders.reduce((sum, order) => sum + order.totalAmount, 0),
     paidAmount: paidOrders.reduce((sum, order) => sum + order.totalAmount, 0),
     sizeCounts,
+    sizeInventory,
   };
 }
 function filterOrders(orders, { q = '', status = '', size = '', date = '' }) {

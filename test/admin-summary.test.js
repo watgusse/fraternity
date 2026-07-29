@@ -34,4 +34,6 @@ test('paid summary includes paid orders after they progress to shipping or compl
   assert.equal(summary.amount, 3300);
   assert.equal(summary.shirts, 6);
   assert.deepEqual(summary.sizeCounts, { S: 1, M: 0, L: 3, XL: 0, '2XL': 2, '3XL': 0 });
+  assert.deepEqual(summary.sizeInventory.S, { production: 21, ordered: 1, remaining: 20 });
+  assert.deepEqual(summary.sizeInventory.L, { production: 86, ordered: 3, remaining: 83 });
 });
