@@ -1,0 +1,42 @@
+<%- include('../partials/header',{title,meta}) %>
+<main class="share-landing">
+  <section class="share-hero text-white">
+    <div class="container py-4 py-lg-5">
+      <div class="share-brand mb-4">
+        <img src="/images/brand/fraternity-official-logo.png" alt="Fraternity Thailand">
+        <div><strong>FRATERNITY THAILAND</strong><small>9TH ANNIVERSARY COLLECTION</small></div>
+      </div>
+      <div class="row align-items-center g-4 g-lg-5">
+        <div class="col-lg-5">
+          <span class="badge rounded-pill share-badge mb-3">PRE-ORDER · ลายพิเศษฉลอง 9 ปี</span>
+          <h1 class="display-4 fw-bold">เสื้อที่ระลึก<br><span class="text-gold">Fraternity Thailand</span></h1>
+          <p class="lead text-white-75">เสื้อสีดำ งานพิมพ์เต็มดีไซน์ด้านหน้า–หลังและแขน ผลิตหลังปิดรับคำสั่งซื้อ</p>
+          <div class="d-flex flex-wrap align-items-center gap-3 my-4">
+            <strong class="share-price"><%= formatCurrency(product.price) %></strong>
+            <span class="badge text-bg-success fs-6">รวมค่าจัดส่งแล้ว</span>
+          </div>
+          <a href="/order?source=facebook" class="btn btn-gold btn-lg px-5 share-cta"><i class="bi bi-bag-check me-2"></i>เลือกไซซ์และสั่งซื้อ</a>
+          <p class="small text-white-50 mt-3 mb-0"><i class="bi bi-shield-check me-1"></i> ไม่ต้องสมัครสมาชิก · กรอกข้อมูลและแนบสลิปได้ทันที</p>
+        </div>
+        <div class="col-lg-7">
+          <img class="share-hero-image" src="/images/social/facebook-shirt-share.jpg" alt="เสื้อ Fraternity Thailand ด้านหน้าและด้านหลัง">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5 bg-white">
+    <div class="container share-narrow">
+      <div class="text-center mb-4"><span class="eyebrow">เลือกได้ครบทุกไซซ์</span><h2 class="h3 mt-2">S ถึง 3XL ราคาเดียว</h2></div>
+      <div class="share-sizes mb-5"><% product.sizes.forEach(size => { %><span><strong><%= size.name %></strong><small>อก <%= size.chest %>″</small></span><% }) %></div>
+      <div class="row g-3 text-center">
+        <div class="col-md-4"><div class="share-step"><i class="bi bi-rulers"></i><strong>1. เลือกไซซ์</strong><small>เทียบรอบอกจากตาราง</small></div></div>
+        <div class="col-md-4"><div class="share-step"><i class="bi bi-qr-code-scan"></i><strong>2. ชำระเงิน</strong><small>สแกน QR หรือโอนผ่านบัญชี</small></div></div>
+        <div class="col-md-4"><div class="share-step"><i class="bi bi-receipt"></i><strong>3. ส่งคำสั่งซื้อ</strong><small>กรอกที่อยู่และแนบสลิป</small></div></div>
+      </div>
+      <div class="text-center mt-5"><h2 class="h4">พร้อมเป็นส่วนหนึ่งของคอลเลกชันนี้หรือยัง?</h2><p class="text-muted">ใช้เวลาเพียงไม่กี่นาทีในการสั่งซื้อ</p><a href="/order?source=facebook" class="btn btn-dark btn-lg px-5">สั่งซื้อเสื้อตอนนี้</a></div>
+    </div>
+  </section>
+  <div class="share-mobile-cta"><div><small>ราคา</small><strong><%= formatCurrency(product.price) %></strong></div><a href="/order?source=facebook" class="btn btn-gold">สั่งซื้อเลย</a></div>
+</main>
+<%- include('../partials/footer') %>

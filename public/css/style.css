@@ -404,3 +404,30 @@ body {
     letter-spacing: 0.02em;
   }
 }
+.share-landing { background: #0b0d0f; }
+.share-hero { background: radial-gradient(circle at 85% 30%, #0d4a3a 0, #15191c 32%, #090b0d 70%); overflow: hidden; }
+.share-brand { display: flex; align-items: center; gap: .75rem; letter-spacing: .12em; }
+.share-brand img { width: 58px; height: 58px; object-fit: contain; filter: invert(1); }
+.share-brand small { display: block; color: #ffffff80; font-size: .68rem; }
+.share-badge { color: #d9ae58; border: 1px solid #d9ae5870; background: #d9ae5815; }
+.text-white-75 { color: #ffffffbf; }
+.share-price { font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--gold); }
+.share-hero-image { display: block; width: 100%; border-radius: 1.25rem; box-shadow: 0 25px 70px #000b; border: 1px solid #ffffff20; }
+.share-narrow { max-width: 980px; }
+.share-sizes { display: grid; grid-template-columns: repeat(6,1fr); gap: .65rem; }
+.share-sizes span { padding: 1rem .5rem; border: 1px solid #dedede; border-radius: .8rem; text-align: center; background: #fafafa; }
+.share-sizes strong,.share-sizes small,.share-step strong,.share-step small { display: block; }
+.share-sizes strong { font-size: 1.25rem; }
+.share-sizes small,.share-step small { color: #6b7280; }
+.share-step { height: 100%; padding: 1.4rem; border-radius: 1rem; background: #f5f6f7; }
+.share-step i { display: block; font-size: 2rem; color: #a77c2e; margin-bottom: .65rem; }
+.share-mobile-cta { display: none; }
+@media (max-width: 767px) {
+  .share-brand { margin-bottom: 1.25rem !important; }
+  .share-hero .display-4 { font-size: 2.35rem; }
+  .share-cta { width: 100%; }
+  .share-sizes { grid-template-columns: repeat(3,1fr); }
+  .share-mobile-cta { position: fixed; z-index: 1030; display: flex; align-items: center; justify-content: space-between; gap: 1rem; left: 0; right: 0; bottom: 0; padding: .7rem 1rem; background: #111; color: #fff; box-shadow: 0 -6px 24px #0004; }
+  .share-mobile-cta small,.share-mobile-cta strong { display: block; }
+  .share-landing { padding-bottom: 72px; }
+}
